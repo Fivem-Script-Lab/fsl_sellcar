@@ -12,18 +12,18 @@ local function FindVehicleWithPlate(tbl, plate)
 end
 
 
-ESX.RegisterUsableItem("salecaragreement", function (source)
+ESX.RegisterUsableItem(Config.ItemName, function (source)
     local xPlayer = ESX.GetPlayerFromId(source)
 
     local player_identifier = xPlayer.getIdentifier()
     local player_ped = GetPlayerPed(source)
     local player_coords = GetEntityCoords(player_ped)
     
-    local players = lib.getNearbyPlayers(player_coords, 10)
+    local players = lib.getNearbyPlayers(player_coords, 20)
     local players_table = {}
 
     for i, v in pairs(players) do
-        if not v.id == source then
+        if v.id ~= source then
             players_table[i] = v
         end
     end
@@ -79,7 +79,7 @@ ESX.RegisterUsableItem("salecaragreement", function (source)
 
     })
 
-    if not offer_data then
+    if not offer_data or offer_data == "cancel" then
         TriggerClientEvent('ox_lib:notify', source, {
             title = "An error has appeared",
             description = "Client refused the offer!",
@@ -88,7 +88,7 @@ ESX.RegisterUsableItem("salecaragreement", function (source)
         return
     end
 
-    local query = DB_VEHICLES_UPDATE.execute({ xPlayer2.getIdentifier() }, {player_identifier, sold_vehicle.plate})
+    DB_VEHICLES_UPDATE.execute({ xPlayer2.getIdentifier() }, {player_identifier, sold_vehicle.plate})
 
     TriggerClientEvent('ox_lib:notify', source, {
         title = "Success",
@@ -104,6 +104,6 @@ ESX.RegisterUsableItem("salecaragreement", function (source)
 
     xPlayer2.removeAccountMoney(account_name, sale_data[4])
     xPlayer.addAccountMoney(account_name, sale_data[4])
-
+    xPlayer.removeInventoryItem(Config.ItemName, 1)
 
 end)
