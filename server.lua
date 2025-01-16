@@ -20,6 +20,13 @@ ESX.RegisterUsableItem("salecaragreement", function (source)
     local player_coords = GetEntityCoords(player_ped)
     
     local players = lib.getNearbyPlayers(player_coords, 10)
+    local players_table = {}
+
+    for i, v in pairs(players) do
+        if not v.id == source then
+            players_table[i] = v
+        end
+    end
 
     local owned_vehicles = DB_VEHICLES_SELECT.execute(player_identifier)
 
@@ -37,7 +44,7 @@ ESX.RegisterUsableItem("salecaragreement", function (source)
     end
 
     local sale_data =  lib.callback.await("fsl:saleData", source, {
-        players = players,
+        players = players_table,
         vehicles = owned_vehicles,
         
     })

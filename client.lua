@@ -4,7 +4,7 @@ lib.callback.register("fsl:saleData", function (data)
     local vehicles = {}
 
     for i,v in pairs(data.players) do
-        players[i] = { label = ("ID: %d"):format(v.id), value = v.id}
+        players[i] = { label = ("ID: %d"):format(v.id), value = v.id }
     end
 
     for i, v in pairs(data.vehicles) do
@@ -15,6 +15,15 @@ lib.callback.register("fsl:saleData", function (data)
         end
         vehicles[i] = { label = ("%s - %s"):format(GetDisplayNameFromVehicleModel(json.decode(v.vehicle).model), v.plate), value = v.plate }
         ::continue::
+    end
+
+    if #players == 0 then
+        lib.notify({
+            title = "An error has appeared",
+            description = "No one is near your!",
+            type = "error"
+        })
+        return false
     end
 
     if #vehicles == 0 then
